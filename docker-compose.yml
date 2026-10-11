@@ -1,0 +1,25 @@
+services:
+  web:
+    build: .
+    image: ${DOCKERHUB_USER}/counter-app:${APP_VERSION}
+    environment:
+      - REDIS_HOST=db-service
+    ports:
+      - "${WEB_PORT}:5000"
+    depends_on:
+      - db-service
+    networks:
+      - app-network
+
+  db-service:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    networks:
+      - app-network
+
+volumes:
+  redis-data:
+networks:
+  app-network:

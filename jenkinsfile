@@ -1,0 +1,26 @@
+pipeline {
+  agent any
+  triggers { githubPush() }            // fires on commit via webhook
+  environment {
+    IMAGE = "ihebgafsi404/counter-app"
+    DH = credentials('dockerhub-creds')
+  }
+  stages {
+    stage('Unit tests') {
+      steps {
+        sh '''python3 -m venv .venv && . .venv/bin/activate
+              pip install -r requirements.txt pytest && pytest -q'''
+      }
+    }
+    stage('Build image') {
+      steps { sh 'docker build -t $IMAGE:$BUILD_NUMBER -t $IMAGE:latest .' }
+    }
+    stage('Push to Docker Hub') {
+      steps {
+        sh '''echo $DH_PSW | docker login -u $DH_USR --password-stdin
+              docker push $IMAGE:$BUILD_NUMBER
+              docker push $IMAGE:latest'''
+      }
+    }
+  }
+}
