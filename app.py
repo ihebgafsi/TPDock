@@ -7,4 +7,4 @@ r = redis.Redis(host=os.getenv("REDIS_HOST", "db-service"), port=6379, decode_re
 @app.route("/")
 def index():
     hits = r.incr("hits")
-    return f"Bonjour ! Cette page a été vue {hits} fois. Je suis le conteneur {socket.gethostname()}\n"
+    return f"Salut ! Cette page a été vue {hits} fois. Je suis le conteneur {socket.gethostname()}\n"
