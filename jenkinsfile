@@ -1,6 +1,6 @@
 pipeline {
   agent any
-  triggers { githubPush() }            // fires on commit via webhook
+  triggers { pollSCM('* * * * *') }            // fires on commit via webhook
   environment {
     IMAGE = "ihebgafsi404/counter-app"
     DH = credentials('dockerhub-creds')
